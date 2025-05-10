@@ -21,6 +21,8 @@ type (
 		Console bool
 		// Set to true to log the caller file, functiona and line number.
 		Caller bool
+		// Set the verbosity level. This is used to filter logs at runtime.
+		V int
 	}
 )
 
@@ -68,7 +70,12 @@ func New(opts *Opts) logr.Logger {
 
 	return logr.New(&sink{
 		logger: &zerologger,
+		v:      opts.V,
 	})
+}
+
+func (s *sink) SetV(v int) {
+	s.v = v
 }
 
 func (s *sink) Init(info logr.RuntimeInfo) {
@@ -81,6 +88,9 @@ func (s *sink) Enabled(v int) bool {
 
 func (s *sink) Info(v int, msg string, keysAndValues ...any) {
 	e := s.logger.Info()
+	if v > 0 {
+		e.Int(vFieldName, v)
+	}
 	s.msg(e, msg, keysAndValues...)
 }
 
@@ -90,16 +100,26 @@ func (s *sink) Error(err error, msg string, keysAndValues ...any) {
 }
 
 func (s *sink) WithValues(keysAndValues ...any) logr.LogSink {
-
-	return s
+	ns := *s
+	nl := ns.logger.With().Fields(keysAndValues).Logger()
+	ns.logger = &nl
+	return &ns
 }
 
 func (s *sink) WithName(name string) logr.LogSink {
-	return s
+	ns := *s
+	if ns.name == "" {
+		ns.name = name
+	} else {
+		ns.name = ns.name + "/" + name
+	}
+	return &ns
 }
 
 func (s *sink) WithCallDepth(depth int) logr.LogSink {
-	return s
+	ns := *s
+	ns.callDepth = ns.callDepth + depth
+	return &ns
 }
 
 func (s *sink) msg(e *zerolog.Event, msg string, keysAndValues ...any) {
@@ -107,13 +127,7 @@ func (s *sink) msg(e *zerolog.Event, msg string, keysAndValues ...any) {
 		e.Str(nameFieldName, s.name)
 	}
 
-	if s.v > 0 {
-		e.Int(vFieldName, s.v)
-	}
-
-	if len(keysAndValues) > 0 {
-		e.Interface("fields", keysAndValues)
-	}
-
+	e.CallerSkipFrame(s.callDepth)
+	e.Fields(keysAndValues)
 	e.Msg(msg)
 }
