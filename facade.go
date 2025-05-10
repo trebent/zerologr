@@ -2,6 +2,7 @@ package zerologr
 
 import "github.com/go-logr/logr"
 
+//nolint:gochecknoglobals
 var logger = New(&Opts{})
 
 func Set(newLogger logr.Logger) {

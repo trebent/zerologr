@@ -27,13 +27,20 @@ type (
 )
 
 var (
+	//nolint:gochecknoglobals
 	nameFieldName = "name"
-	vFieldName    = "v"
+	//nolint:gochecknoglobals
+	vFieldName = "v"
 )
 
+const staticDepth = 2
+
+//nolint:gochecknoinits
 func init() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	//nolint:reassign
 	zerolog.MessageFieldName = "msg"
+	//nolint:reassign
 	zerolog.ErrorFieldName = "err"
 }
 
@@ -46,14 +53,17 @@ func SetVFieldName(name string) {
 }
 
 func SetTimestampFieldName(name string) {
+	//nolint:reassign
 	zerolog.TimestampFieldName = name
 }
 
 func SetErrorFieldName(name string) {
+	//nolint:reassign
 	zerolog.ErrorFieldName = name
 }
 
 func SetMessageFieldName(name string) {
+	//nolint:reassign
 	zerolog.MessageFieldName = name
 }
 
@@ -79,7 +89,7 @@ func (s *sink) SetV(v int) {
 }
 
 func (s *sink) Init(info logr.RuntimeInfo) {
-	s.callDepth = info.CallDepth + 2
+	s.callDepth = info.CallDepth + staticDepth
 }
 
 func (s *sink) Enabled(v int) bool {
@@ -118,7 +128,7 @@ func (s *sink) WithName(name string) logr.LogSink {
 
 func (s *sink) WithCallDepth(depth int) logr.LogSink {
 	ns := *s
-	ns.callDepth = ns.callDepth + depth
+	ns.callDepth += depth
 	return &ns
 }
 
