@@ -1,3 +1,19 @@
+// zerologr is a logr.Logger implementation that uses zerolog for logging.
+// It provides a simple interface to log messages with different verbosity levels and
+// structured logging capabilities. It supports console output and caller information.
+// It is designed to be used as a drop-in replacement for logr.Logger in applications that
+// already use logr for logging.
+//
+// zerologr does not adapt to zerolog levels, it only logs Info and Error level messages.
+// It does not support Debug or Trace levels, as it is designed to follow
+// the logr interface as closely as possible. It does not make much sense to translate
+// between verbosity and zerolog levels if a package wants to make use of logr for logging.
+//
+// zerologr will change the global zerolog level to InfoLevel, so that it does not log
+// Debug or Trace level messages by default. This is to ensure that zerologr behaves
+// consistently with the logr interface. It will also set the zerolog
+// MessageFieldName and ErrorFieldName, both and more are possible to override using the Set*FieldName
+// functions of this package.
 package zerologr
 
 import (
@@ -15,6 +31,7 @@ type (
 		v         int
 		callDepth int
 	}
+	// Opts is the options for the zerologr logger.
 	Opts struct {
 		// Set to true to log to prettily to console. If false, logs are formatted
 		// as JSON.
@@ -44,29 +61,35 @@ func init() {
 	zerolog.ErrorFieldName = "err"
 }
 
+// SetNameFieldName sets the name field name for loggers.
 func SetNameFieldName(name string) {
 	nameFieldName = name
 }
 
+// SetVFieldName sets the verbosity field name for loggers.
 func SetVFieldName(name string) {
 	vFieldName = name
 }
 
+// SetTimestampFieldName sets the timestamp field name for loggers.
 func SetTimestampFieldName(name string) {
 	//nolint:reassign
 	zerolog.TimestampFieldName = name
 }
 
+// SetErrorFieldName sets the error field name for loggers.
 func SetErrorFieldName(name string) {
 	//nolint:reassign
 	zerolog.ErrorFieldName = name
 }
 
+// SetMessageFieldName sets the message field name for loggers.
 func SetMessageFieldName(name string) {
 	//nolint:reassign
 	zerolog.MessageFieldName = name
 }
 
+// New creates a new logr.Logger with the specified options.
 func New(opts *Opts) logr.Logger {
 	zerologger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
