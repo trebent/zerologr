@@ -17,20 +17,20 @@ func V(level int) logr.Logger {
 	return logger.V(level).WithCallDepth(-1)
 }
 
-func Info(msg string, keysAndValues ...interface{}) {
+func Info(msg string, keysAndValues ...any) {
 	logger.Info(msg, keysAndValues...)
 }
 
-func Error(err error, msg string, keysAndValues ...interface{}) {
+func Error(err error, msg string, keysAndValues ...any) {
 	logger.Error(err, msg, keysAndValues...)
 }
 
 func WithName(name string) logr.Logger {
-	return logger.WithName(name)
+	return logger.WithName(name).WithCallDepth(-1)
 }
 
-func WithValues(keysAndValues ...interface{}) logr.Logger {
-	return logger.WithValues(keysAndValues...)
+func WithValues(keysAndValues ...any) logr.Logger {
+	return logger.WithValues(keysAndValues...).WithCallDepth(-1)
 }
 
 func WithCallDepth(depth int) logr.Logger {
