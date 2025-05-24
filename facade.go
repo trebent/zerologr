@@ -13,12 +13,12 @@ func Set(newLogger logr.Logger) {
 	logger = newLogger.WithCallDepth(1)
 }
 
-// Get returns true if the global logger is enabled for the current verbosity level.
+// Enabled returns true if the global logger is enabled for the current verbosity level.
 func Enabled() bool {
 	return logger.Enabled()
 }
 
-// Get returns the global logger with the specified verbosity level.
+// V returns the global logger with the specified verbosity level.
 func V(level int) logr.Logger {
 	// Have to remove one frame of call depth because the stack depth is reduced from using the
 	// returned logger.

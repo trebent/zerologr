@@ -1,4 +1,4 @@
-// zerologr is a logr.Logger implementation that uses zerolog for logging.
+// Package zerologr is a logr.Logger implementation that uses zerolog for logging.
 // It provides a simple interface to log messages with different verbosity levels and
 // structured logging capabilities. It supports console output and caller information.
 // It is designed to be used as a drop-in replacement for logr.Logger in applications that
