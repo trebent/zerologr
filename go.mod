@@ -1,6 +1,6 @@
 module github.com/trebent/zerologr
 
-go 1.25.0
+go 1.25.9
 
 require (
 	github.com/go-logr/logr v1.4.3
