@@ -93,12 +93,12 @@ func SetMessageFieldName(name string) {
 func New(opts *Opts) logr.Logger {
 	zerologger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
-	if opts.Caller {
-		zerologger = zerologger.With().Caller().Logger()
-	}
-
 	if opts.Console {
 		zerologger = zerologger.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	}
+
+	if opts.Caller {
+		zerologger = zerologger.With().Caller().Logger()
 	}
 
 	return logr.New(&sink{
