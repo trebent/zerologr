@@ -17,6 +17,7 @@
 package zerologr
 
 import (
+	"io"
 	"os"
 
 	"github.com/go-logr/logr"
@@ -33,6 +34,8 @@ type (
 	}
 	// Opts is the options for the zerologr logger.
 	Opts struct {
+		// Output sets the destination writer for the logs. If not set, it defaults to os.Stdout.
+		Output io.Writer
 		// Set to true to log to prettily to console. If false, logs are formatted
 		// as JSON.
 		Console bool
@@ -91,10 +94,18 @@ func SetMessageFieldName(name string) {
 
 // New creates a new logr.Logger with the specified options.
 func New(opts *Opts) logr.Logger {
-	zerologger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	if opts == nil {
+		opts = &Opts{}
+	}
+
+	if opts.Output == nil {
+		opts.Output = os.Stdout
+	}
+
+	zerologger := zerolog.New(opts.Output).With().Timestamp().Logger()
 
 	if opts.Console {
-		zerologger = zerologger.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+		zerologger = zerologger.Output(zerolog.ConsoleWriter{Out: opts.Output})
 	}
 
 	if opts.Caller {
