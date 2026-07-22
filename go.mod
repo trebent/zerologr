@@ -3,7 +3,7 @@ module github.com/trebent/zerologr
 go 1.25.9
 
 require (
-	github.com/go-logr/logr v1.4.3
+	github.com/go-logr/logr v1.4.4
 	github.com/rs/zerolog v1.35.1
 )
 
