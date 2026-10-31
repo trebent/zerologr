@@ -1,6 +1,6 @@
 module github.com/trebent/zerologr/tools
 
-go 1.26.2
+go 1.26.10
 
 tool golang.org/x/vuln/cmd/govulncheck
 
